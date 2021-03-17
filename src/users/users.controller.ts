@@ -9,14 +9,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserDto } from './dto/user.dto';
+import { User } from './schemas/users.schema';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  public async find(): Promise<UserDto[]> {
+  public async find(): Promise<User[]> {
     return await this.usersService.findUsers();
   }
 

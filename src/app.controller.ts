@@ -8,8 +8,8 @@ import { AuthService } from './auth/auth.service';
 export class AppController {
   constructor(private authService: AuthService) {}
   @Get()
-  findAll(@Req() req: Request) {
-    return '[Authentication Service] : Hello world !';
+  test(@Req() req: Request) {
+    return '[Authentication Service] : OK!';
   }
 
   @UseGuards(LocalAuthGuard)
@@ -18,24 +18,36 @@ export class AppController {
     return req.user;
   }
 
-  // @UseGuards(LocalAuthGuard)
-  // @Post('auth/jwt/login')
-  // async loginWithJWT(@Req() req, @Res() res: Response) {
-  //   // JWT token
-  //   const token = await this.authService.login(req.user);
-  //   res.cookie('jwt-token', token, { maxAge: 60, httpOnly: true });
-  //   res.send(token);
-  // }
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/jwt/login')
+  async loginWithJWT(@Req() req, @Res() res: Response) {
+    // JWT token
+    const token = await this.authService.login(req.user);
 
-  // @UseGuards(LocalAuthGuard)
-  // @Post('auth/jwt/login')
-  // async login2(@Req() req) {
-  //   return req.user;
-  // }
+    // Set cookie
+    // res.cookie('jwt-token', token, {
+    //   maxAge: 600000,
+    //   httpOnly: true,
+    //   sameSite: true,
+    // });
 
-  // @UseGuards(JwtAuthGuard)
-  // @Get('profile')
-  // getProfile(@Req() req) {
-  //   return req.user;
-  // }
+    res.json({
+      token,
+      user: req.user,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('auth/me')
+  getUserData(@Req() req, @Res() res: Response) {
+    return res.json({
+      user: req.user,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Req() req) {
+    return req.user;
+  }
 }
