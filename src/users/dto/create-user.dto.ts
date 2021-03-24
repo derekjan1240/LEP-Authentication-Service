@@ -8,8 +8,16 @@ import {
   Min,
   Max,
   IsEmail,
-  IsFQDN,
+  IsEnum,
+  IsOptional,
 } from 'class-validator';
+
+enum Role {
+  Student = 'Student',
+  Parent = 'Parent',
+  Teacher = 'Teacher',
+  Admin = 'Admin',
+}
 
 export class CreateUserDto {
   @ApiProperty({ required: true })
@@ -19,16 +27,7 @@ export class CreateUserDto {
   userName: string;
 
   @ApiProperty({ required: true })
-  @Min(1, { message: '年齡最小為 1 歲' })
-  @Max(200, { message: '年齡最大為 200 歲' })
-  @IsPositive({ message: '年齡不得為負數' })
-  @IsInt({ message: '年齡必須為整數' })
-  @IsNotEmpty({ message: '年齡不得為空' })
-  age: number;
-
-  @ApiProperty({ required: true })
   @IsEmail({}, { message: 'Email 型態錯誤' })
-  @IsFQDN({}, { message: 'Email 型態錯誤' })
   @IsNotEmpty({ message: 'Email 不得為空' })
   email: string;
 
@@ -37,4 +36,17 @@ export class CreateUserDto {
   @IsString({ message: '密碼型態錯誤' })
   @IsNotEmpty({ message: '密碼不得為空' })
   password: string;
+
+  @ApiProperty({ required: true })
+  @IsEnum(Role, { message: '身分型態錯誤' })
+  @IsNotEmpty({ message: '身分不得為空' })
+  role: Role;
+
+  @ApiProperty({ required: false })
+  @Min(1, { message: '年齡最小為 1 歲' })
+  @Max(200, { message: '年齡最大為 200 歲' })
+  @IsPositive({ message: '年齡不得為負數' })
+  @IsInt({ message: '年齡必須為整數' })
+  @IsOptional()
+  age: number;
 }
