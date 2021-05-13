@@ -25,9 +25,19 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  @Get()
-  public async find(): Promise<User[]> {
+  @UseGuards(JwtAuthGuard)
+  @Get('/all')
+  public async findAll(): Promise<User[]> {
     return await this.usersService.findUsers();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  public async find(@Req() req, @Res() res: Response) {
+    const User = await this.usersService.findOneById(req.user.userId);
+    res.json({
+      user: User.toJson(),
+    });
   }
 
   @Post()

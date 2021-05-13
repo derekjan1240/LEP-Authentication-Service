@@ -48,8 +48,17 @@ export class UsersService {
     }
   }
 
-  async findOne(email: string): Promise<any> {
+  async findOneByEmail(email: string): Promise<any> {
     const User = await this.userModel.findOne({ email });
     return User.toObject();
+  }
+
+  async findOneById(userId: string): Promise<any> {
+    try {
+      const User = await this.userModel.findById(userId);
+      return User;
+    } catch (error) {
+      throw new HttpException('使用者不存在', HttpStatus.NOT_FOUND);
+    }
   }
 }
