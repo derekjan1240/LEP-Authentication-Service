@@ -8,11 +8,14 @@ import {
   Put,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UsersService } from './users.service';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from './schemas/users.schema';
 
 @Controller('users')
@@ -35,6 +38,19 @@ export class UsersController {
     res.json({
       token,
       user: User,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  public async update(
+    @Req() req,
+    @Body() dto: UpdateUserDto,
+    @Res() res: Response,
+  ) {
+    const User = await this.usersService.updateUser(req.user.userId, dto);
+    res.json({
+      user: User.toJson(),
     });
   }
 }

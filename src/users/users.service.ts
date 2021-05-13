@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/users.schema';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 const saltOrRounds = 10;
 
@@ -27,11 +28,23 @@ export class UsersService {
         userName: user.userName,
         age: user?.age || null,
         email: user.email,
+        role: user.role,
         password: await bcrypt.hash(user.password, saltOrRounds),
       });
       newUser.save();
 
       return newUser;
+    }
+  }
+
+  async updateUser(userId: String, data: UpdateUserDto): Promise<User> {
+    try {
+      const updatedUser = await this.userModel.findByIdAndUpdate(userId, data, {
+        new: true,
+      });
+      return updatedUser;
+    } catch (error) {
+      throw new HttpException('更新失敗', HttpStatus.BAD_REQUEST);
     }
   }
 
