@@ -24,7 +24,7 @@ async function bootstrap() {
   );
 
   await app.listen(8081, () => {
-    logger.log('Assistant Service is running on port 8081!');
+    logger.log('Authentication Service is running on port 8081!');
   });
 }
 bootstrap();
