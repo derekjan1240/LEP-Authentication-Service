@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User {
+  _id: any;
+
   @Prop({ required: true })
   userName: string;
 
@@ -32,6 +34,7 @@ export class User {
 
   toJson() {
     return {
+      id: this._id,
       userName: this.userName,
       age: this.age,
       email: this.email,

@@ -47,7 +47,7 @@ export class UsersController {
 
     res.json({
       token,
-      user: User,
+      user: User.toJson(),
     });
   }
 
