@@ -4,7 +4,24 @@ import { AppModule } from './app.module';
 import { initSwagger } from './app.swagger';
 import * as cookieParser from 'cookie-parser';
 
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+
 async function bootstrap() {
+  const micro = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.REDIS,
+      options: {
+        url: 'redis://localhost:6379',
+        retryAttempts: 5, // 對外request重試次數
+        retryDelay: 1000, // 重試間隔
+      },
+    },
+  );
+  micro.listen(() => {
+    Logger.log('Microservice is listening!');
+  });
+
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule, {
     cors: {

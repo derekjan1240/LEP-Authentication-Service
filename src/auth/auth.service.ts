@@ -19,6 +19,10 @@ export class AuthService {
     return null;
   }
 
+  async validJwtTokenAndUser(data) {
+    return this.jwtService.verify(data);
+  }
+
   async login(user: any) {
     const payload = {
       id: user._id,

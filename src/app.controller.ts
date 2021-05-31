@@ -4,9 +4,22 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
 
+import { MessagePattern } from '@nestjs/microservices';
+
 @Controller()
 export class AppController {
   constructor(private authService: AuthService) {}
+
+  @MessagePattern('AUTH_valid_user')
+  async vallidUser(data: any): Promise<any> {
+    try {
+      const user = await this.authService.validJwtTokenAndUser(data.token);
+      return user.id === data.user ? user : false;
+    } catch (error) {
+      return false;
+    }
+  }
+
   @Get()
   test(@Req() req: Request) {
     return '[Authentication Service] : OK!';
