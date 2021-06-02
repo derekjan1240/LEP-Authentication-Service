@@ -26,7 +26,7 @@ export class UsersService {
           $in: ids,
         },
       })
-      .select('_id userName email');
+      .select('_id userName email age');
     return Users;
   }
 
