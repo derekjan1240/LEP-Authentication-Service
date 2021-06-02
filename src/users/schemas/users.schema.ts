@@ -34,7 +34,7 @@ export class User {
 
   toJson() {
     return {
-      id: this._id,
+      _id: this._id,
       userName: this.userName,
       age: this.age,
       email: this.email,
