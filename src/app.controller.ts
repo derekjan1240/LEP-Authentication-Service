@@ -5,16 +5,30 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { AuthService } from './auth/auth.service';
 
 import { MessagePattern } from '@nestjs/microservices';
+import { UsersService } from './users/users.service';
 
 @Controller()
 export class AppController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @MessagePattern('AUTH_valid_user')
   async vallidUser(data: any): Promise<any> {
     try {
       const user = await this.authService.validJwtTokenAndUser(data.token);
       return user.id === data.user ? user : false;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  @MessagePattern('AUTH_get_user_relation')
+  async getUserRelation(ids: string[]): Promise<any> {
+    try {
+      const result = this.userService.findByIds(ids);
+      return result;
     } catch (error) {
       return false;
     }

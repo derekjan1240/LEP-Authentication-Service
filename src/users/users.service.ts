@@ -19,6 +19,17 @@ export class UsersService {
     return Users;
   }
 
+  async findByIds(ids): Promise<User[]> {
+    const Users = await this.userModel
+      .find({
+        _id: {
+          $in: ids,
+        },
+      })
+      .select('_id userName email');
+    return Users;
+  }
+
   async createUser(user: CreateUserDto): Promise<User> {
     const User = await this.userModel.findOne({ email: user.email });
     if (User) {
