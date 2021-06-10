@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('DATABASE_MONGODB_URI'),
+        uri: configService.get<string>('DATABASE_AUTHENTICATION_MONGODB_URI'),
       }),
       inject: [ConfigService],
     }),
