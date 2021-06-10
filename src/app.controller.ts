@@ -17,8 +17,21 @@ export class AppController {
   @MessagePattern('AUTH_valid_user')
   async vallidUser(data: any): Promise<any> {
     try {
-      const user = await this.authService.validJwtTokenAndUser(data.token);
-      return user.id === data.user ? user : false;
+      const payloadUser = await this.authService.validJwtTokenAndUser(
+        data.token,
+      );
+      // 雙重驗證
+      if (payloadUser.id !== data.user) {
+        return false;
+      }
+
+      const user = await this.userService.findOneById(payloadUser.id);
+      return user.id === data.user
+        ? {
+            ...user.toJson(),
+            _id: user._id.toString(),
+          }
+        : false;
     } catch (error) {
       return false;
     }
