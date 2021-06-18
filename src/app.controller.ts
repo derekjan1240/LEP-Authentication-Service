@@ -1,4 +1,12 @@
-import { Controller, Req, Res, Post, UseGuards, Get } from '@nestjs/common';
+import {
+  Controller,
+  Req,
+  Res,
+  Post,
+  UseGuards,
+  Get,
+  Body,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -89,5 +97,43 @@ export class AppController {
   @Get('profile')
   getProfile(@Req() req) {
     return req.user;
+  }
+
+  /* 實驗用 API */
+
+  // 驗證身分
+  @Post('test/valid/user')
+  public async validUser(@Body() body: any) {
+    try {
+      const payloadUser = await this.authService.validJwtTokenAndUser(
+        body.data.token,
+      );
+      console.log(payloadUser);
+      // 雙重驗證
+      if (payloadUser.id !== body.data.user) {
+        return false;
+      }
+
+      const user = await this.userService.findOneById(payloadUser.id);
+      return user.id === body.data.user
+        ? {
+            ...user.toJson(),
+            _id: user._id.toString(),
+          }
+        : false;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  // 取的 Users 資料
+  @Post('test/relation/user')
+  public async relationUsers(@Body() body: any) {
+    try {
+      const result = this.userService.findByIds(body.data.ids);
+      return result;
+    } catch (error) {
+      return false;
+    }
   }
 }
