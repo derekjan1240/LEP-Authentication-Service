@@ -55,6 +55,17 @@ export class AppController {
     }
   }
 
+  @MessagePattern('AUTH_test')
+  async getAuthTest(id: number): Promise<any> {
+    const FAKE_AUTH_DATA = [
+      {
+        id: '1',
+        name: 'FAKE_AUTH_DATA',
+      },
+    ];
+    return FAKE_AUTH_DATA[id];
+  }
+
   @Get()
   test(@Req() req: Request) {
     return '[Authentication Service] : OK!';
@@ -102,13 +113,23 @@ export class AppController {
   /* 實驗用 API */
 
   // 驗證身分
+  @Post('test')
+  public async authTest(@Body() body: any) {
+    const FAKE_AUTH_DATA = [
+      {
+        id: '1',
+        name: 'FAKE_AUTH_DATA',
+      },
+    ];
+    return FAKE_AUTH_DATA[body.data.id];
+  }
+
   @Post('test/valid/user')
   public async validUser(@Body() body: any) {
     try {
       const payloadUser = await this.authService.validJwtTokenAndUser(
         body.data.token,
       );
-      console.log(payloadUser);
       // 雙重驗證
       if (payloadUser.id !== body.data.user) {
         return false;
